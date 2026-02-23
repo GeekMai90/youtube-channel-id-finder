@@ -2,7 +2,10 @@ const statusEl = document.getElementById("status");
 const resultEl = document.getElementById("result");
 const extraEl = document.getElementById("extra");
 const channelIdEl = document.getElementById("channelId");
-const copyBtn = document.getElementById("copyBtn");
+const copyIdBtn = document.getElementById("copyIdBtn");
+const copyRssBtn = document.getElementById("copyRssBtn");
+
+const RSS_FEED_BASE = "https://www.youtube.com/feeds/videos.xml?channel_id=";
 
 function setStatus(text) {
   statusEl.textContent = text;
@@ -27,6 +30,10 @@ function clearResult() {
   extraEl.classList.add("hidden");
   extraEl.textContent = "";
   channelIdEl.value = "";
+}
+
+function getRssFeedUrl(channelId) {
+  return `${RSS_FEED_BASE}${encodeURIComponent(channelId)}`;
 }
 
 async function requestChannelIds(tabId) {
@@ -84,38 +91,61 @@ async function run() {
   }
 }
 
-function markCopiedAndClose() {
-  copyBtn.textContent = "已复制";
+function markCopiedAndClose(buttonEl) {
+  buttonEl.textContent = "已复制";
   setStatus("复制完成，正在关闭...");
   setTimeout(() => {
     window.close();
   }, 200);
 }
 
-copyBtn.addEventListener("click", async () => {
-  const value = channelIdEl.value.trim();
+async function copyTextAndClose(value, buttonEl) {
+  const originalText = buttonEl.textContent;
   if (!value) {
     return;
   }
 
   try {
     await navigator.clipboard.writeText(value);
-    markCopiedAndClose();
+    markCopiedAndClose(buttonEl);
   } catch (_error) {
     try {
-      channelIdEl.select();
+      const tempEl = document.createElement("textarea");
+      tempEl.value = value;
+      tempEl.setAttribute("readonly", "");
+      tempEl.style.position = "fixed";
+      tempEl.style.left = "-9999px";
+      document.body.appendChild(tempEl);
+      tempEl.select();
       const ok = document.execCommand("copy");
+      document.body.removeChild(tempEl);
       if (ok) {
-        markCopiedAndClose();
+        markCopiedAndClose(buttonEl);
         return;
       }
     } catch (_ignored) {
       // ignore
     }
 
-    copyBtn.textContent = "复制";
+    buttonEl.textContent = originalText;
     setStatus("复制失败，请手动复制后重试。");
   }
+}
+
+copyIdBtn.addEventListener("click", async () => {
+  const channelId = channelIdEl.value.trim();
+  await copyTextAndClose(channelId, copyIdBtn);
+});
+
+copyRssBtn.addEventListener("click", async () => {
+  const channelId = channelIdEl.value.trim();
+  if (!channelId) {
+    setStatus("当前没有可用的 Channel ID。");
+    return;
+  }
+
+  const rssUrl = getRssFeedUrl(channelId);
+  await copyTextAndClose(rssUrl, copyRssBtn);
 });
 
 run();

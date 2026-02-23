@@ -9,12 +9,14 @@ A lightweight Chrome extension that extracts YouTube `Channel ID` (for example `
   - `"channelIds":["UC..."]`
 - Fallback matching for standard `UC...` channel ID format.
 - Works with YouTube SPA navigation (route changes are re-detected).
-- One-click copy and auto-close popup after copy.
+- One-click `Copy ID` and `Copy RSS Feed URL`.
+- Auto-close popup after copy.
 
 - 从页面源码中匹配 `channelIds` 字段。
 - 兜底匹配标准 `UC...` 格式频道 ID。
 - 兼容 YouTube 单页应用路由切换（自动重新检测）。
-- 一键复制，复制成功后自动关闭弹窗。
+- 支持“复制 ID”和“复制 RSS 订阅链接”两个按钮。
+- 复制成功后自动关闭弹窗。
 
 ## Install | 安装（开发者模式）
 1. Open Chrome extensions page: `chrome://extensions/`
@@ -33,14 +35,18 @@ A lightweight Chrome extension that extracts YouTube `Channel ID` (for example `
    - `https://www.youtube.com/channel/UC...`
 2. Click the extension icon.
 3. The popup shows detected Channel ID.
-4. Click `复制` to copy.
+4. Click `复制 ID` to copy channel ID.
+5. Click `复制 RSS 订阅链接` to copy:
+   - `https://www.youtube.com/feeds/videos.xml?channel_id=<CHANNEL_ID>`
 
 1. 打开任意 YouTube 频道主页，例如：
    - `https://www.youtube.com/@channelHandle`
    - `https://www.youtube.com/channel/UC...`
 2. 点击扩展图标
 3. 弹窗会显示检测到的 Channel ID
-4. 点击“复制”即可
+4. 点击“复制 ID”可复制频道 ID
+5. 点击“复制 RSS 订阅链接”可复制 RSS 地址：
+   - `https://www.youtube.com/feeds/videos.xml?channel_id=<CHANNEL_ID>`
 
 ## Project Structure | 项目结构
 - `manifest.json`: extension config (MV3)

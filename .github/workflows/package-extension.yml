@@ -1,0 +1,47 @@
+name: Package Chrome Extension
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build zip package
+        run: |
+          REPO_NAME="youtube-channel-id-finder"
+          VERSION="${GITHUB_REF_NAME}"
+
+          if [ "${GITHUB_REF_TYPE}" != "tag" ]; then
+            VERSION="${GITHUB_SHA::7}"
+          fi
+
+          ZIP_NAME="${REPO_NAME}-${VERSION}.zip"
+
+          zip -r "${ZIP_NAME}" \
+            manifest.json \
+            content.js \
+            popup.html \
+            popup.css \
+            popup.js \
+            icons
+
+          echo "ZIP_NAME=${ZIP_NAME}" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-extension-zip
+          path: ${{ env.ZIP_NAME }}
