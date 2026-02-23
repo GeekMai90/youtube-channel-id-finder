@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Channel ID Finder</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <main class="wrap">
+    <h1>YouTube Channel ID</h1>
+    <p id="status" class="status">正在检测当前页面...</p>
+    <div id="result" class="result hidden">
+      <label for="channelId">Channel ID</label>
+      <input id="channelId" type="text" readonly />
+      <button id="copyBtn" type="button">复制</button>
+    </div>
+    <div id="extra" class="extra hidden"></div>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
